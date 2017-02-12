@@ -1,4 +1,8 @@
 *.dSYM
-*.swp
+*.dylib
+*.lib
+*.o
+*.out
 .DS_Store
 .vscode
+build
