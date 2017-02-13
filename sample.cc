@@ -58,8 +58,13 @@ int main(int ac, char** av) {
   std::cout << "debug " << std::boolalpha << state.debug << std::noboolalpha << "\n";
   std::cout << "output " << state.output_pathname << "\n";
   std::cout << "verbose " << std::boolalpha << state.verbose << std::noboolalpha << "\n";
-  std::cout << ac << " remaining ar" << ((ac != 1) ? "gs" : "g") << ":\n";
-  for (int i{0}; i < ac; ++i) { std::cout << av[i] << "\n"; }
+
+  if (ac) {
+    std::cout << ac << " input argumen" << ((ac != 1) ? "ts" : "t") << ":\n";
+    for (int i{0}; i < ac; ++i) { std::cout << av[i] << "\n"; }
+  } else {
+    std::cout << "no input arguments\n";
+  }
 
   ::exit(EXIT_SUCCESS);
 }
