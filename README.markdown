@@ -2,7 +2,7 @@
 
 Copyright &copy; 2017 Ramsey Dow. All rights reserved.
 
-[![AUR](https://img.shields.io/badge/license-LPGL%20v3-blue.svg)]()
+[![AUR](https://img.shields.io/badge/license-LPGL%20v3-blue.svg?maxAge=2592000)]()
 ![Platforms](https://img.shields.io/badge/platform-macOS%20|%20Linux%20|%20Windows-lightgrey.svg)
 
 - [What is Arg Machine?](#1)
@@ -71,6 +71,6 @@ At this point you will perform argument validation, initialize unspecified argum
 
 ## <a id="5"></a> Where to go next
 
-Refer to [`sample.cc`]() for a complete example that illustrates how to use the Arg Machine API.
+Refer to [`sample.cc`](https://github.com/yesmar/arg_machine/blob/master/sample.cc) for a complete example that illustrates how to use the Arg Machine API.
 
 All of Arg Machine's documentation can be found in the [project wiki](). In addition to API documentation, there are pages that detail additional topics, including how to contribute to the project.
