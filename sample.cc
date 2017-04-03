@@ -13,6 +13,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Arg Machine. If not, see <http://www.gnu.org/licenses/>.
 
+// Compile with:
+// clang++ -I. -std=c++14 -Wall -Wextra -Werror sample.cc
+
 #include <string>
 #include <arguments>
 #include <iostream>
