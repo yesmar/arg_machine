@@ -15,11 +15,11 @@ Arg Machine is free software. It is distributed under the terms of version 3 of 
 
 ## <a id="1"></a> What is Arg Machine?
 
-Arg Machine is a portable command line argument processor that runs on Unix and Unix-like operating systems like Linux and macOS. It also runs on Windows. In fact, Arg Machine can run anywhere that supports modern C++ applications. Arg Machine implements the functionality you've come to expect from GNU [`getopt`](https://www.gnu.org/software/libc/manual/html_node/Getopt.html), but in a simpler, more straightforward manner.
+Arg Machine is a portable command line argument processor that runs on Unix and Unix-like operating systems, like Linux and macOS. It also runs on modern Windows. In fact, Arg Machine can run anywhere that supports modern C++ applications. Arg Machine implements the functionality you've come to expect from GNU [`getopt`](https://www.gnu.org/software/libc/manual/html_node/Getopt.html), but in a simpler, more straightforward manner.
 
-Arg Machine is opinionated. Instead of requiring you to write the logic to process `argc` and `argv**`, it does the work for you. Just configure the arguments that your program accepts, instantiate the argument processor with those arguments, and invoke the `process` method. Arg Machine will translate command line arguments into runtime state for your program.
+Arg Machine is opinionated. Instead of requiring you to write the logic to process `argc` and `argv**`, it does the work for you. Just configure the arguments that your program accepts, instantiate the argument processor with user-supplied arguments, and invoke the `process` method. Arg Machine will translate those command line arguments into runtime state for your program.
 
-Arg Machine understands short (`-h`) and long (`--help`) arguments, including variants that support only one type (e.g., short only with no corresponding long variant). Arguments may be configured to take an additional paramter, but this is not required. Additional parameters may be optional or they may be required.
+Arg Machine understands short (`-h`) and long (`--help`) arguments, including variants that support only one type (*e.g.*, short only with no long counterpart). Arguments may be configured to take an additional paramter, but this is not required. Additional parameters may be optional or they may be required.
 
 Non-argument inputs may be freely interspersed throughout the command line. These will be ignored by the argument processor. In fact, arguments will be removed as they are processed, leaving `argv**` to contain only the non-argument inputs. `argc` is automatically updated to the correct count. The user program can then make use of these additional program inputs once argument processing has completed.
 
@@ -61,16 +61,14 @@ That's it!
 Arg Machine is supplied as a single header file. Just `#include <arguments>` in your C++ application and you are ready to go. Using the API is straightforward:
 
 - Initialize one `argument::config` instance per argument.
-- Instantiate an `argument::processor` instance, passing in a `std::initialization_list` of the `argument::config` instances.
+- Instantiate an `argument::processor` instance, passing in a `std::initialization_list` of your `argument::config` instances.
 - Invoke the `process` method on your `argument::processor` instance.
 - Catch and deal with any `argument::bad_argument` exceptions that arise.
 
-Assuming no exceptional conditions, the command line arguments will have been processed and the runtime state configured as specified by your `argument::config` instances. The program's `argc` and `argv**` will have been rewritten to include any non-arguments that the processor skipped.
-
-At this point you will perform argument validation, initialize unspecified arguments to sane defaults, and deal with any non-argument input parameters.
+Assuming no exceptional conditions, the command line arguments will have been processed and the runtime state configured as specified by your `argument::config` instances. The program's `argc` and `argv**` will have been rewritten to include any non-arguments that the processor skipped. At this point you will perform argument validation, initialize unspecified arguments to sane defaults, and deal with any non-argument input parameters.
 
 ## <a id="5"></a> Where to go next
 
 Refer to [`sample.cc`](https://github.com/yesmar/arg_machine/blob/master/sample.cc) for a complete example that illustrates how to use the Arg Machine API.
 
-All of Arg Machine's documentation can be found in the [project wiki](). In addition to API documentation, there are pages that detail additional topics, including how to contribute to the project.
+All of Arg Machine's documentation can be found in the [project wiki](https://github.com/yesmar/arg_machine/wiki). In addition to API documentation, there are pages that detail additional topics, including how to contribute to the project.
