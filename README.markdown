@@ -15,26 +15,26 @@ Arg Machine is free software. It is distributed under the terms of version 3 of 
 
 ## <a id="1"></a> What is Arg Machine?
 
-Arg Machine is a portable command line argument processor that runs on Unix and Unix-like operating systems, like Linux and macOS. It also runs on modern Windows. In fact, Arg Machine can run anywhere that supports modern C++ applications. Arg Machine implements the functionality you've come to expect from GNU [`getopt`](https://www.gnu.org/software/libc/manual/html_node/Getopt.html), but in a simpler, more straightforward manner.
+Arg Machine is a portable command line argument processor that runs on Unix and Unix-like operating systems, like Linux and macOS. It also runs on modern Windows. In fact, Arg Machine can run anywhere that supports modern C++ apps. Arg Machine implements the functionality you've come to expect from GNU [`getopt`](https://www.gnu.org/software/libc/manual/html_node/Getopt.html), but in a simpler, more straightforward way.
 
-Arg Machine is opinionated. Instead of requiring you to write the logic to process `argc` and `argv**`, it does the work for you. Just configure the arguments that your program accepts, instantiate the argument processor with user-supplied arguments, and invoke the `process` method. Arg Machine will translate those command line arguments into runtime state for your program.
+Arg Machine is opinionated. Instead of requiring you to write the logic to process `argc` and `argv**`, it does the work for you. Just specify the arguments that your program accepts, instantiate the processor and feed user-supplied arguments to the `process` method. Arg Machine will translate those command line arguments into runtime state for your program.
 
-Arg Machine understands short (`-h`) and long (`--help`) arguments, including variants that support only one type (*e.g.*, short only with no long counterpart). Arguments may be configured to take an additional paramter, but this is not required. Additional parameters may be optional or they may be required.
+Arg Machine understands short (`-h`) and long (`--help`) arguments, including variants that support only one type (*e.g.*, short only with no long counterpart). However, Arg Machine is not completely POSIX compliant. It does not permit multiple arguments to follow a single hyphen (*e.g.*, `-abc` as shorthand for `-a -b -c`). Arguments may be configured to take an additional parameter, but this is not required. Additional parameters may be optional or they may be required.
 
-Non-argument inputs may be freely interspersed throughout the command line. These will be ignored by the argument processor. In fact, arguments will be removed as they are processed, leaving `argv**` to contain only the non-argument inputs. `argc` is automatically updated to the correct count. The user program can then make use of these additional program inputs once argument processing has completed.
+Non-argument inputs may be freely interspersed throughout the command line. These will be ignored by the argument processor. In fact, arguments will be removed as they are processed, leaving `argv**` to contain only the non-argument inputs. `argc` is automatically updated to the correct count. The user program can make use of these additional program inputs once argument processing has completed.
 
 Arg Machine provides several convenience features:
 
 - The base name of the program
 - The complete, original command line invocation (useful for logging purposes)
-- Detailed usage information available via the `-h` and `--help` arguments
-- The ability to add an additional string to `usage` output, e.g., a copyright statement
+- Detailed usage information provided automatically via the `-h` and `--help` arguments
+- The ability to add an additional string to `usage` output, *e.g.*, a copyright statement
 
-Arg Machine favors convention over configuration, allowing you to add standard argument processing capabilities to your programs quickly and easily. Arg Machine allows you to focus on your app instead of the intricacies of argument processing.
+Arg Machine favors convention over configuration, allowing you to add standard argument processing capabilities to your programs quickly and easily. Arg Machine lets you focus on your app instead of the intricacies of argument processing.
 
 Additional benefits:
 
-- Distributed as a single header file (just `#include` the header and use the API)
+- Distributed as a single header file (just `#include <arguments>` and start using the API)
 - Flexible argument configuration using initialized lambda captures to define your program's runtime state
 - No memory allocations on the heap
 
@@ -46,13 +46,13 @@ Arg Machine does not perform argument validation. It has no idea what constitute
 
 Arg Machine follows the [Unix tradition](https://en.wikipedia.org/wiki/Unix_philosophy) of doing one thing and doing it well. In this case, translating command line arguments into actionable runtime state. What you do with that state (and any left over, non-argument input parameters) is up to you.
 
-Arg Machine was born in the Unix world where `main` doesn't have a `wchar_t` variant (like [`WinMain`](https://msdn.microsoft.com/en-us/library/windows/desktop/ms633559(v=vs.85).aspx) on Windows platforms). As such, Arg Machine does not currently support wide arguments on Windows. This shortcoming will be addressed in a future release.
+Arg Machine was born in the Unix world where `main` doesn't have a `wchar_t` variant (like [`WinMain`](https://msdn.microsoft.com/en-us/library/windows/desktop/ms633559(v=vs.85).aspx) on Windows platforms). Arg Machine does not currently support wide arguments on Windows. This shortcoming will be addressed in a future release.
 
 ## <a id="3"></a> Requirements
 
-This all sounds great so far, but what's the catch?
+This all sounds great, but what's the catch?
 
-> Arg Machine requires a modern C++ compiler because it makes liberal use of [initialized lambda captures](http://en.cppreference.com/w/cpp/language/lambda), a C++14 extension.
+> Arg Machine requires a modern C++ compiler because it relies on [initialized lambda captures](http://en.cppreference.com/w/cpp/language/lambda), a C++14 extension.
 
 That's it!
 
@@ -60,12 +60,12 @@ That's it!
 
 Arg Machine is supplied as a single header file. Just `#include <arguments>` in your C++ application and you are ready to go. Using the API is straightforward:
 
-- Initialize one `argument::config` instance per argument.
+- Initialize and configure one `argument::config` instance per argument.
 - Instantiate an `argument::processor` instance, passing in a `std::initialization_list` of your `argument::config` instances.
 - Invoke the `process` method on your `argument::processor` instance.
 - Catch and deal with any `argument::bad_argument` exceptions that arise.
 
-Assuming no exceptional conditions, the command line arguments will have been processed and the runtime state configured as specified by your `argument::config` instances. The program's `argc` and `argv**` will have been rewritten to include any non-arguments that the processor skipped. At this point you will perform argument validation, initialize unspecified arguments to sane defaults, and deal with any non-argument input parameters.
+Assuming no exceptional conditions, the command line arguments will have been processed and the runtime state configured as specified by the configurations of your `argument::config` instances. The program's `argc` and `argv**` will have been rewritten to include just the non-arguments that were skipped by the processor. It is at this point that you will perform argument validation, initialize unspecified arguments to sane defaults, and deal with any non-argument input parameters.
 
 ## <a id="5"></a> Where to go next
 
