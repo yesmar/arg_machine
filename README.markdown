@@ -11,7 +11,7 @@ Copyright &copy; 2017, 2020 Ramsey Dow.
 - [Using Arg Machine](#4)
 - [Where to go next](#5)
 
-Arg Machine is free software. It is distributed under [The MIT License](https://spdx.org/licenses/MIT), permitting its use within proprietary programs.
+Arg Machine is free software. It is distributed under [The MIT License](https://spdx.org/licenses/MIT).
 
 ## <a id="1"></a> What is Arg Machine?
 
