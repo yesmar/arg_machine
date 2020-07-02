@@ -1,8 +1,8 @@
 # Arg Machine
 
-Copyright &copy; 2017 Ramsey Dow. All rights reserved.
+Copyright &copy; 2017, 2020 Ramsey Dow.
 
-[![AUR](https://img.shields.io/badge/license-LPGL%20v3-blue.svg?maxAge=2592000)]()
+[![AUR](https://img.shields.io/badge/license-MIT-blue.svg?maxAge=2592000)]()
 ![Platforms](https://img.shields.io/badge/platform-macOS%20|%20Linux%20|%20Windows-lightgrey.svg)
 
 - [What is Arg Machine?](#1)
@@ -11,7 +11,7 @@ Copyright &copy; 2017 Ramsey Dow. All rights reserved.
 - [Using Arg Machine](#4)
 - [Where to go next](#5)
 
-Arg Machine is free software. It is distributed under the terms of version 3 of the [GNU Lesser General Public License](https://www.gnu.org/licenses/lgpl.html), permitting its use within proprietary programs.
+Arg Machine is free software. It is distributed under [The MIT License](https://spdx.org/licenses/MIT), permitting its use within proprietary programs.
 
 ## <a id="1"></a> What is Arg Machine?
 
