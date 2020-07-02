@@ -69,6 +69,6 @@ Assuming no exceptional conditions, the command line arguments will have been pr
 
 ## <a id="5"></a> Where to go next
 
-Refer to [`sample.cc`](https://github.com/yesmar/arg_machine/blob/master/sample.cc) for a complete example that illustrates how to use the Arg Machine API.
+Refer to [`sample.cc`](https://github.com/yesmar/arg_machine/blob/main/sample.cc) for a complete example that illustrates how to use the Arg Machine API.
 
 All of Arg Machine's documentation can be found in the [project wiki](https://github.com/yesmar/arg_machine/wiki). In addition to API documentation, there are pages that detail additional topics, including how to contribute to the project.
