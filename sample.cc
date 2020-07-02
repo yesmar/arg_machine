@@ -19,9 +19,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-// Compile with:
-// clang++ -I. -std=c++14 -Wall -Wextra -Werror sample.cc
-
 #include <string>
 #include <arguments>
 #include <iostream>
