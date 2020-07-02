@@ -46,7 +46,7 @@ void process_arguments(int& ac, char**& av, runtime_state& state) {
   auto verbose_conf{argument::config('v', "", "Increase verbosity", argument::parameter_type::none, "", [&flag = state.verbose](const char* __unused param) { flag = true; })};
 
   // ^ That was all setup. Here's where the action is…
-  argument::processor arg_machine(ac, av, {&debug_conf, &output_conf, &verbose_conf}, "Arg Machine Copyright © 2017 Ramsey Dow. All rights reserved.");
+  argument::processor arg_machine(ac, av, {&debug_conf, &output_conf, &verbose_conf}, "Arg Machine Copyright © 2017, 2020 Ramsey Dow. All rights reserved.");
   try {
     arg_machine.process(ac, av);
   }
