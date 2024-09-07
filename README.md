@@ -75,7 +75,7 @@ Give it a spin!
 
 ```zsh
 mkdir -p build && pushd !#:2
-cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=on -DCMAKE_BUILD_TYPE=release -GNinja ..
+cmake -GNinja ..
 ninja
 ```
 
