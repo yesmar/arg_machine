@@ -71,4 +71,14 @@ Assuming no exceptional conditions, the command line arguments will have been pr
 
 Refer to [`sample.cc`](https://github.com/yesmar/arg_machine/blob/main/sample.cc) for a complete example that illustrates how to use the Arg Machine API.
 
+Give it a spin!
+
+```zsh
+mkdir -p build && pushd !#:2
+cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=on -DCMAKE_BUILD_TYPE=release -GNinja ..
+ninja
+```
+
+If you don't use `ninja` then just leave off the `-GNinja` flag and run the build using `make`.
+
 All of Arg Machine's documentation can be found in the [project wiki](https://github.com/yesmar/arg_machine/wiki). In addition to API documentation, there are pages that detail additional topics, including how to contribute to the project.
