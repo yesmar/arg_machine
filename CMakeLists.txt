@@ -1,4 +1,4 @@
-# Arg Machine © 2017, 2020 Ramsey Dow.
+# Arg Machine © 2017, 2020, 2024, Ramsey Dow.
 # SPDX-License-Identifier: MIT
 
 cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
