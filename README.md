@@ -1,6 +1,6 @@
 # Arg Machine
 
-Copyright &copy; 2017, 2020, 2024, Ramsey Dow.
+Copyright &copy; 2017 Ramsey Dow.
 
 [![AUR](https://img.shields.io/badge/license-MIT-blue.svg?maxAge=2592000)]()
 ![Platforms](https://img.shields.io/badge/platform-macOS%20|%20Linux%20|%20Windows-lightgrey.svg)
