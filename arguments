@@ -24,10 +24,10 @@
 #pragma once
 
 #if defined WIN32
-#include <windows.h>
+# include <windows.h>
 #define PATH_DELIM '\\'
-#else
-#define PATH_DELIM '/'
+# else
+# define PATH_DELIM '/'
 #endif
 
 #include <exception>
@@ -42,225 +42,226 @@
 #include <set>
 
 namespace argument {
-  // Bad argument exception.
-  class bad_argument : public std::exception {
-    public:
-      bad_argument(const std::string& message): message_{message} {}
-      // bad_argument(const char* message): message_{message} {}
-      virtual const char* what() const throw() { return message_.c_str(); }
-    private:
-      // const char* message_;
-      std::string message_;
-  };
+    // Bad argument exception.
+    class bad_argument : public std::exception {
+        public:
+        bad_argument(const std::string& message): message_{message} {}
+        // bad_argument(const char* message): message_{message} {}
+        virtual const char* what() const throw() { return message_.c_str(); }
 
-  // Parameter type.
-  enum class parameter_type { none, optional, required };
+        private:
+        // const char* message_;
+        std::string message_;
+    };
 
-  // Argument configuration.
-  struct config {
-    char short_name_; // Short argument name.
-    std::string long_name_; // Long argument name.
-    std::string description_; // Argument description.
-    parameter_type parameter_type_; // Does argument have an additional parameter?
-    std::string parameter_name_; // If so, what is the parameter's name?
-    std::function<void(const char*)> closure_; // Closure indicating how the argument is interpreted.
+    // Parameter type.
+    enum class parameter_type { none, optional, required };
 
-    config() {}
+    // Argument configuration.
+    struct config {
+        char short_name_; // Short argument name.
+        std::string long_name_; // Long argument name.
+        std::string description_; // Argument description.
+        parameter_type parameter_type_; // Does argument have an additional parameter?
+        std::string parameter_name_; // If so, what is the parameter's name?
+        std::function<void(const char*)> closure_; // Closure indicating how the argument is interpreted.
 
-    config(char short_name, std::string long_name, std::string description, parameter_type parameter_type, std::string parameter_name, std::function<void(const char*)> closure)
-    : short_name_{short_name}, long_name_{long_name}, description_{description}, parameter_type_{parameter_type}, parameter_name_{parameter_name}, closure_{closure}
-    {}
-  };
+        config() {}
+
+        config(char short_name, std::string long_name, std::string description, parameter_type parameter_type, std::string parameter_name, std::function<void(const char*)> closure)
+        : short_name_{short_name}, long_name_{long_name}, description_{description}, parameter_type_{parameter_type}, parameter_name_{parameter_name}, closure_{closure}
+        {}
+    };
 }
 
 std::ostream& operator<<(std::ostream& os, const argument::config& arg) {
-  int size{4};
-  os << std::setw(4) << " ";
-  if (arg.short_name_ != '\0') {
-    os << "-" << arg.short_name_;
-    size += 2;
-  }
-  if (!arg.long_name_.empty()) {
+    int size{4};
+    os << std::setw(4) << " ";
     if (arg.short_name_ != '\0') {
-      os << ", ";
-      size += 2;
+        os << "-" << arg.short_name_;
+        size += 2;
     }
-    os << "--" << arg.long_name_;
-    size += (2 + arg.long_name_.size());
-  }
-  if (arg.parameter_type_ == argument::parameter_type::required) {
-    os << " <" << arg.parameter_name_ << ">";
-    size += (3 + arg.parameter_name_.size());
-  } else if (arg.parameter_type_ == argument::parameter_type::optional) {
-    os << " [" << arg.parameter_name_ << "]";
-    size += (3 + arg.parameter_name_.size());
-  }
-  if (!arg.description_.empty()) {
-    int padding{40-size};
-    os << std::setw(padding) << " " << arg.description_;
-  }
-  os << "\n";
-  return os;
+    if (!arg.long_name_.empty()) {
+        if (arg.short_name_ != '\0') {
+            os << ", ";
+            size += 2;
+        }
+        os << "--" << arg.long_name_;
+        size += (2 + arg.long_name_.size());
+    }
+    if (arg.parameter_type_ == argument::parameter_type::required) {
+        os << " <" << arg.parameter_name_ << ">";
+        size += (3 + arg.parameter_name_.size());
+    } else if (arg.parameter_type_ == argument::parameter_type::optional) {
+        os << " [" << arg.parameter_name_ << "]";
+        size += (3 + arg.parameter_name_.size());
+    }
+    if (!arg.description_.empty()) {
+        int padding{40-size};
+        os << std::setw(padding) << " " << arg.description_;
+    }
+    os << "\n";
+    return os;
 }
 
 namespace argument {
-  // Argument tuple type alias.
-  using arg_tuple = std::tuple<char, std::string, config*>;
+    // Argument tuple type alias.
+    using arg_tuple = std::tuple<char, std::string, config*>;
 
-  // Command line argument processor.
-  class processor {
-    public:
-      processor(int& ac, char**& av, std::initializer_list<config*> args, const char* usage_message)
-      : invocation_{av, av+ac}
-      {
-        // Base program name.
-        char* p = ::strrchr(av[0], PATH_DELIM);
-        program_name_ = (p && p+1) ? p+1 : av[0];
-        ++av;
-        --ac;
+    // Command line argument processor.
+    class processor {
+        public:
+        processor(int& ac, char**& av, std::initializer_list<config*> args, const char* usage_message)
+        : invocation_{av, av+ac}
+        {
+            // Base program name.
+            char* p = ::strrchr(av[0], PATH_DELIM);
+            program_name_ = (p && p+1) ? p+1 : av[0];
+            ++av;
+            --ac;
 
-        // Supported command line arguments.
-        for (config* arg : args) {
-          args_.insert(std::make_tuple(arg->short_name_, arg->long_name_, arg));
-        }
-
-        // Automatically generated help/usage argument.
-        static auto help_conf = config('h', "help", "Display this help text", parameter_type::none, "", [this](const char* __unused param) {
-          usage(std::cerr);
-          ::exit(EXIT_FAILURE);
-        });
-        args_.insert(std::make_tuple(help_conf.short_name_, help_conf.long_name_, &help_conf));
-
-        // Optional usage message.
-        if (usage_message && *usage_message) { usage_message_ = usage_message; }
-      }
-
-      ~processor() {}
-
-      void push_back(config* arg) {
-        args_.insert(std::make_tuple(arg->short_name_, arg->long_name_, arg));
-      }
-
-      void process(int& ac, char**& av) {
-        int updated_ac = ac;
-        for (int i = 0; i < ac; ++i) {
-          if (av[i][0] == '-') {
-            char* arg_name;
-            bool is_long = false;
-            if (av[i][1] == '-') {
-              if (!av[i][2]) {
-                // End of options.
-                av[i] = nullptr;
-                --updated_ac;
-                break;
-              }
-              arg_name = &av[i][2]; // It's a long option.
-              is_long = true;
-            } else {
-              if (!av[i][1]) { throw bad_argument{"missing argument name"}; }
-              arg_name = &av[i][1]; // It's a short option.
+            // Supported command line arguments.
+            for (config* arg : args) {
+                args_.insert(std::make_tuple(arg->short_name_, arg->long_name_, arg));
             }
 
-            // Look up the argument.
-            const arg_tuple* targ = nullptr;
-            for (auto& arg : args_) {
-              if (is_long) {
-                if (std::get<1>(arg) == arg_name) {
-                  targ = &(arg);
-                  break;
+            // Automatically generated help/usage argument.
+            static auto help_conf = config('h', "help", "Display this help text", parameter_type::none, "", [this](const char* __unused param) {
+                usage(std::cerr);
+                ::exit(EXIT_FAILURE);
+            });
+            args_.insert(std::make_tuple(help_conf.short_name_, help_conf.long_name_, &help_conf));
+
+            // Optional usage message.
+            if (usage_message && *usage_message) { usage_message_ = usage_message; }
+        }
+
+        ~processor() {}
+
+        void push_back(config* arg) {
+            args_.insert(std::make_tuple(arg->short_name_, arg->long_name_, arg));
+        }
+
+        void process(int& ac, char**& av) {
+            int updated_ac = ac;
+            for (int i = 0; i < ac; ++i) {
+                if (av[i][0] == '-') {
+                    char* arg_name;
+                    bool is_long = false;
+                    if (av[i][1] == '-') {
+                        if (!av[i][2]) {
+                            // End of options.
+                            av[i] = nullptr;
+                            --updated_ac;
+                            break;
+                        }
+                        arg_name = &av[i][2]; // It's a long option.
+                        is_long = true;
+                    } else {
+                        if (!av[i][1]) { throw bad_argument{"missing argument name"}; }
+                        arg_name = &av[i][1]; // It's a short option.
+                    }
+
+                    // Look up the argument.
+                    const arg_tuple* targ = nullptr;
+                    for (auto& arg : args_) {
+                        if (is_long) {
+                            if (std::get<1>(arg) == arg_name) {
+                                targ = &(arg);
+                                break;
+                            }
+                        } else {
+                            if (std::get<0>(arg) == arg_name[0]) {
+                                targ = &(arg);
+                                break;
+                            }
+                        }
+                    }
+
+                    if (targ) {
+                        bool has_param = process_argument(arg_name, targ, const_cast<const char**>(av), i);
+
+                        // Null out arguments and parameters as they are processed.
+                        av[i] = nullptr;
+                        --updated_ac;
+                        if (has_param) {
+                            av[i+1] = nullptr;
+                            --updated_ac;
+                            ++i;
+                        }
+                    } else {
+                        std::string message{arg_name};
+                        message += ": illegal argument";
+                        throw bad_argument{message};
+                    }
                 }
-              } else {
-                if (std::get<0>(arg) == arg_name[0]) {
-                  targ = &(arg);
-                  break;
+            }
+
+            // Update the caller's argument count and vector.
+            std::vector<char*> scratch{av, av+ac};
+            scratch.erase(std::remove(scratch.begin(), scratch.end(), nullptr), scratch.end());
+            for (int i = 0; i < ac; ++i) { av[i] = nullptr; }
+            int pos = 0;
+            for (char* p : scratch) { av[pos++] = p; }
+            ac = updated_ac;
+        }
+
+        void usage(std::ostream& os) const {
+            if (!usage_message_.empty()) { os << "\n" << usage_message_ << "\n"; }
+            os << "\nUsage: " << program_name_;
+            if (args_.size()) {
+                os << " [options]\n\n";
+                for (auto& arg : args_) {
+                    auto& argument = std::get<2>(arg);
+                    os << (*argument);
                 }
-              }
             }
-
-            if (targ) {
-              bool has_param = process_argument(arg_name, targ, const_cast<const char**>(av), i);
-
-              // Null out arguments and parameters as they are processed.
-              av[i] = nullptr;
-              --updated_ac;
-              if (has_param) {
-                av[i+1] = nullptr;
-                --updated_ac;
-                ++i;
-              }
-            } else {
-              std::string message{arg_name};
-              message += ": illegal argument";
-              throw bad_argument{message};
-            }
-          }
+            os << "\n";
         }
 
-        // Update the caller's argument count and vector.
-        std::vector<char*> scratch{av, av+ac};
-        scratch.erase(std::remove(scratch.begin(), scratch.end(), nullptr), scratch.end());
-        for (int i = 0; i < ac; ++i) { av[i] = nullptr; }
-        int pos = 0;
-        for (char* p : scratch) { av[pos++] = p; }
-        ac = updated_ac;
-      }
-
-      void usage(std::ostream& os) const {
-        if (!usage_message_.empty()) { os << "\n" << usage_message_ << "\n"; }
-        os << "\nUsage: " << program_name_;
-        if (args_.size()) {
-          os << " [options]\n\n";
-          for (auto& arg : args_) {
-            auto& argument = std::get<2>(arg);
-            os << (*argument);
-          }
+        const std::string& program_name() const {
+            return program_name_;
         }
-        os << "\n";
-      }
 
-      const std::string& program_name() const {
-        return program_name_;
-      }
-
-      const std::vector<const char*>& invocation() const {
-        return invocation_;
-      }
-
-    private:
-      bool process_argument(const char* arg_name, const arg_tuple* targ, const char** av, int i) {
-        auto arg = std::get<2>(*targ);
-        const char* param = nullptr;
-        bool has_param = false;
-        if (arg->parameter_type_ != parameter_type::none) {
-          if (av[i+1]) {
-            if (av[i+1][0] != '-') {
-              param = av[i+1];
-              has_param = true;
-            } else {
-              std::string message{arg_name};
-              message += ": parameter looks like an argument";
-              throw bad_argument{message};
-            }
-          } else {
-            if (arg->parameter_type_ == parameter_type::required) {
-              std::string message{arg_name};
-              message += ": missing a required parameter";
-              throw bad_argument{message};
-            }
-          }
+        const std::vector<const char*>& invocation() const {
+            return invocation_;
         }
-        arg->closure_(param);
-        return has_param;
-      }
 
-      std::string program_name_; // Base name of the program.
-      std::string usage_message_; // Optional additional usage message.
-      std::vector<const char*> invocation_; // Original program invocation.
-      std::set<arg_tuple> args_; // Arg Machine argument configuration.
-  };
+        private:
+        bool process_argument(const char* arg_name, const arg_tuple* targ, const char** av, int i) {
+            auto arg = std::get<2>(*targ);
+            const char* param = nullptr;
+            bool has_param = false;
+            if (arg->parameter_type_ != parameter_type::none) {
+                if (av[i+1]) {
+                    if (av[i+1][0] != '-') {
+                        param = av[i+1];
+                        has_param = true;
+                    } else {
+                        std::string message{arg_name};
+                        message += ": parameter looks like an argument";
+                        throw bad_argument{message};
+                    }
+                } else {
+                    if (arg->parameter_type_ == parameter_type::required) {
+                        std::string message{arg_name};
+                        message += ": missing a required parameter";
+                        throw bad_argument{message};
+                    }
+                }
+            }
+            arg->closure_(param);
+            return has_param;
+        }
+
+        std::string program_name_; // Base name of the program.
+        std::string usage_message_; // Optional additional usage message.
+        std::vector<const char*> invocation_; // Original program invocation.
+        std::set<arg_tuple> args_; // Arg Machine argument configuration.
+    };
 }
 
 inline std::ostream& operator<<(std::ostream& os, const argument::processor& instance) {
-  instance.usage(os);
-  return os;
+    instance.usage(os);
+    return os;
 }
