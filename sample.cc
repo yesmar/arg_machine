@@ -1,4 +1,4 @@
-// Arg Machine Copyright © 2017, 2020, 2024, Ramsey Dow.
+// Arg Machine Copyright © 2017 Ramsey Dow.
 // SPDX-License-Identifier: MIT
 
 // Permission is hereby granted, free of charge, to any person obtaining a
